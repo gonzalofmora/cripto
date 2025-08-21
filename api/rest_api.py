@@ -30,7 +30,13 @@ def daily_account_snapshot():
         logging.info(f"daily_account_snapshot() rate limits: {rate_limits}")
 
         data = response.data()
-        logging.info(f"daily_account_snapshot() response: {data}")
+        specific_data = data.snapshot_vos[0].data.balances
+        #logging.info(f"Specific data type: {type(specific_data)}")
+        #logging.info(f"daily_account_snapshot() response: {specific_data}")
+        monedas = [balance.asset for balance in specific_data]
+        montos = [sum([float(balance.free), float(balance.locked)]) for balance in specific_data]
+        balances = dict(zip(monedas, montos))
+        logging.info(f"Balances: {balances}")
     except Exception as e:
         logging.error(f"daily_account_snapshot() error: {e}")
         
